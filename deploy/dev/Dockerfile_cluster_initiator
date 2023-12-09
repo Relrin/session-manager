@@ -1,0 +1,6 @@
+FROM redis:7.2.3
+
+COPY ./deploy/dev/entrypoint.sh /entrypoint.sh
+RUN chmod 755 /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
