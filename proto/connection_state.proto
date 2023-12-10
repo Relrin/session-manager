@@ -4,6 +4,7 @@ package connection_state;
 service ConnectionStateManager {
   rpc SetConnectionState(SetConnectionStateRequest) returns (SetConnectionStateResponse) {}
   rpc GetConnectionState(GetConnectionStateRequest) returns (GetConnectionStateResponse) {}
+  rpc ResetConnectionState(ResetConnectionStateRequest) returns (ResetConnectionStateResponse) {}
 }
 
 message SetConnectionStateRequest {
@@ -37,4 +38,12 @@ message GetConnectionStateResponse {
   // used for storing information such as: server name, login & password,
   // voice settings, etc.
   map<string, string> metadata = 3;
+}
+
+message ResetConnectionStateRequest {
+  // The unique player's id that we want query by.
+  string player_id = 1;
+}
+
+message ResetConnectionStateResponse {
 }
