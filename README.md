@@ -1,2 +1,2 @@
-# connection-state-manager
-[Experimental] Connection state manager for games
+# session-manager
+[Experimental] Session manager for games

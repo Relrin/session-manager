@@ -1,13 +1,13 @@
 syntax = "proto3";
-package connection_state;
+package session;
 
-service ConnectionStateManager {
-  rpc SetConnectionState(SetConnectionStateRequest) returns (SetConnectionStateResponse) {}
-  rpc GetConnectionState(GetConnectionStateRequest) returns (GetConnectionStateResponse) {}
-  rpc ResetConnectionState(ResetConnectionStateRequest) returns (ResetConnectionStateResponse) {}
+service SessionManager {
+  rpc SetSession(SetSessionRequest) returns (SetSessionResponse) {}
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {}
+  rpc ResetSession(ResetSessionRequest) returns (ResetSessionResponse) {}
 }
 
-message SetConnectionStateRequest {
+message SetSessionRequest {
   // The unique player ids, that should have the same connection data.
   // Defined as a list to allow batched set requests.
   repeated string player_ids = 1;
@@ -21,15 +21,15 @@ message SetConnectionStateRequest {
   map<string, string> metadata = 4;
 }
 
-message SetConnectionStateResponse {
+message SetSessionResponse {
 }
 
-message GetConnectionStateRequest {
+message GetSessionRequest {
   // The unique player's id that we want query by.
   string player_id = 1;
 }
 
-message GetConnectionStateResponse {
+message GetSessionResponse {
   // The server address
   string host = 1;
   // The listened port by the remote server
@@ -40,10 +40,11 @@ message GetConnectionStateResponse {
   map<string, string> metadata = 3;
 }
 
-message ResetConnectionStateRequest {
+message ResetSessionRequest {
   // The unique player's id that we want query by.
-  string player_id = 1;
+  // Defined as a list to allow batched set requests.
+  repeated string player_ids = 1;
 }
 
-message ResetConnectionStateResponse {
+message ResetSessionResponse {
 }

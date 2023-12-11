@@ -2,9 +2,9 @@ use structopt::StructOpt;
 
 #[derive(StructOpt, Debug)]
 #[structopt(
-    name = "connection-state-manager",
+    name = "session-manager",
     version = "0.1.0",
-    about = "Connection state manager microservice"
+    about = "Session manager microservice"
 )]
 pub struct CliOptions {
     #[structopt(
