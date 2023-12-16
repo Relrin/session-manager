@@ -1,6 +1,7 @@
 use deadpool_redis::{PoolError};
 use derive_more::Display;
 use redis::RedisError;
+use serde_json::error::Error as SerdeError;
 use tonic::{Code, Status};
 use tonic_types::{ErrorDetails, StatusExt};
 
@@ -13,6 +14,7 @@ pub enum Error {
         field: String,
         message: String,
     },
+    SerdeError(String),
     RedisError(String),
 }
 
@@ -20,6 +22,7 @@ impl Error {
     fn code(&self) -> Code {
         match self {
             Error::ValidationError { .. } => Code::InvalidArgument,
+            Error::SerdeError { .. } => Code::InvalidArgument,
             Error::RedisError(_) => Code::Internal,
         }
     }
@@ -51,6 +54,12 @@ impl From<RedisError> for Error {
 impl From<PoolError> for Error {
     fn from(err: PoolError) -> Self {
         Error::RedisError(err.to_string())
+    }
+}
+
+impl From<SerdeError> for Error {
+    fn from(err: SerdeError) -> Self {
+        Error::SerdeError(err.to_string())
     }
 }
 
