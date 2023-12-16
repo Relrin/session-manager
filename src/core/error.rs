@@ -1,8 +1,6 @@
-use deadpool_redis_cluster::{
-    PoolError,
-    redis::RedisError
-};
+use deadpool_redis::{PoolError};
 use derive_more::Display;
+use redis::RedisError;
 use tonic::{Code, Status};
 use tonic_types::{ErrorDetails, StatusExt};
 

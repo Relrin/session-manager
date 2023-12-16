@@ -1,9 +1,8 @@
-use deadpool_redis_cluster::{Config, Runtime};
-use deadpool_redis_cluster::Pool as RedisClusterConnectionPool;
+use deadpool_redis::cluster::{Config, Runtime, Pool, Manager, Connection};
 
 use crate::cli::CliOptions;
 
-pub async fn create_redis_conection_pool(opts: &CliOptions) -> RedisClusterConnectionPool {
+pub async fn create_redis_conection_pool(opts: &CliOptions) -> Pool {
     let template = match opts.redis_username.is_empty() && opts.redis_password.is_empty() {
         true => format!("redis://{0}:{1}@", opts.redis_username, opts.redis_password),
         false => "redis://".to_string()
