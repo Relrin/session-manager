@@ -40,9 +40,10 @@ impl SessionManager for SessionManagerService {
             .map(|player_id| (player_id, &session_json))
             .collect::<Vec<_>>();
 
-        let mut pipeline = redis::pipe().mset(&entries_mset).ignore();
+        let mut pipeline = redis::pipe();
+        pipeline.mset(&entries_mset).ignore();
         for player_id in request_body.player_ids {
-            pipeline = pipeline.expire(player_id, SESSION_TTL).ignore();
+            pipeline.expire(player_id, SESSION_TTL).ignore();
         }
 
         let mut redis_connection = self.redis.get().await.map_err(|err| Error::from(err))?;
