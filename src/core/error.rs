@@ -1,4 +1,4 @@
-use deadpool_redis::{PoolError};
+use deadpool_redis::PoolError;
 use derive_more::Display;
 use redis::RedisError;
 use serde_json::error::Error as SerdeError;

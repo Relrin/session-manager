@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct Session {
@@ -14,7 +14,7 @@ impl Session {
         return Session {
             host: host.clone(),
             port,
-            metadata: metadata.clone()
-        }
+            metadata: metadata.clone(),
+        };
     }
 }

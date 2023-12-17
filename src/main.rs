@@ -1,14 +1,14 @@
 mod api;
 mod cli;
-mod multiplex_service;
 mod core;
+mod multiplex_service;
 
 use axum::{routing::get, Router};
 use log::info;
 use structopt::StructOpt;
 
-use crate::api::session::SessionManagerService;
 use crate::api::k8s::healthcheck;
+use crate::api::session::SessionManagerService;
 use crate::cli::CliOptions;
 use crate::core::redis::create_redis_conection_pool;
 use crate::multiplex_service::MultiplexService;
