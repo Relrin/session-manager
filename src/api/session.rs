@@ -66,6 +66,19 @@ impl SessionManager for SessionManagerService {
         &self,
         request: Request<ResetSessionRequest>,
     ) -> Result<Response<ResetSessionResponse>, Status> {
-        todo!()
+        let request_body = request.into_inner();
+
+        let mut pipeline = redis::pipe();
+        for player_id in request_body.player_ids {
+            pipeline.del(player_id).ignore();
+        }
+
+        let mut redis_connection = self.redis.get().await.map_err(|err| Error::from(err))?;
+        pipeline
+            .query_async::<_, ()>(&mut redis_connection)
+            .await
+            .map_err(|err| Error::from(err))?;
+
+        Ok(Response::new(ResetSessionResponse {}))
     }
 }
