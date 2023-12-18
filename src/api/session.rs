@@ -1,4 +1,5 @@
 use deadpool_redis::cluster::Pool as RedisClusterConnectionPool;
+use redis::{cmd, RedisResult};
 use tonic::{Request, Response, Status};
 
 use crate::core::error::Error;
@@ -59,7 +60,22 @@ impl SessionManager for SessionManagerService {
         &self,
         request: Request<GetSessionRequest>,
     ) -> Result<Response<GetSessionResponse>, Status> {
-        todo!()
+        let player_id = request.into_inner().player_id;
+
+        let mut redis_connection = self.redis.get().await.map_err(|err| Error::from(err))?;
+
+        let redis_result: RedisResult<String> = cmd("GET")
+            .arg(&[player_id])
+            .query_async(&mut redis_connection)
+            .await;
+
+        if redis_result.is_err() {
+            return Err(Status::not_found("Session not found"))
+        }
+
+        let serialized_session = redis_result.unwrap();
+        let session: Session = serde_json::from_str(&serialized_session).map_err(|err| Error::from(err))?;
+        Ok(Response::new(GetSessionResponse::from(session)))
     }
 
     async fn reset_session(
