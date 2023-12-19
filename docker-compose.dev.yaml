@@ -6,6 +6,28 @@ volumes:
   redis_3_data: {}
 
 services:
+
+  app:
+    build:
+      context: .
+      dockerfile: ./deploy/dev/Dockerfile_app
+    volumes:
+      - ./:/code/
+    ports:
+      - "9000:8000"
+    tty: true
+    depends_on:
+      - redis_1
+      - redis_2
+      - redis_3
+      - cluster_initiator
+    links:
+      - redis_1
+      - redis_2
+      - redis_3
+    networks:
+      - redis_cluster_net
+
   redis_1:
     image: 'redis:7.2.3'
     container_name: redis_1
