@@ -64,8 +64,11 @@ impl SessionManager for SessionManagerService {
 
         let mut redis_connection = self.redis.get().await.map_err(|err| Error::from(err))?;
 
-        let redis_result: RedisResult<String> = cmd("GET")
-            .arg(&[player_id])
+        let redis_result: RedisResult<String> = redis::pipe()
+            .cmd("READONLY")
+            .ignore()
+            .cmd("GET")
+            .arg(&player_id)
             .query_async(&mut redis_connection)
             .await;
 
