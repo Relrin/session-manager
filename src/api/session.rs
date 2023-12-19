@@ -1,5 +1,5 @@
 use deadpool_redis::cluster::Pool as RedisClusterConnectionPool;
-use redis::{cmd, RedisResult};
+use redis::{RedisResult};
 use tonic::{Request, Response, Status};
 
 use crate::core::error::Error;
@@ -64,7 +64,7 @@ impl SessionManager for SessionManagerService {
 
         let mut redis_connection = self.redis.get().await.map_err(|err| Error::from(err))?;
 
-        let redis_result: RedisResult<String> = redis::pipe()
+        let redis_result: RedisResult<Vec<String>> = redis::pipe()
             .cmd("READONLY")
             .ignore()
             .cmd("GET")
@@ -77,7 +77,8 @@ impl SessionManager for SessionManagerService {
         }
 
         let serialized_session = redis_result.unwrap();
-        let session: Session = serde_json::from_str(&serialized_session).map_err(|err| Error::from(err))?;
+        let session: Session = serde_json::from_str(&serialized_session[0]).map_err(|err| Error::from(err))?;
+
         Ok(Response::new(GetSessionResponse::from(session)))
     }
 

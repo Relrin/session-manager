@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::proto::GetSessionResponse;
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Session {
     host: String,
     port: u32,

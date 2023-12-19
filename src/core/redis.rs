@@ -5,8 +5,8 @@ use crate::core::error::Result;
 
 pub async fn create_redis_conection_pool(opts: &CliOptions) -> Result<Pool> {
     let template = match opts.redis_username.is_empty() && opts.redis_password.is_empty() {
-        true => format!("redis://{0}:{1}@", opts.redis_username, opts.redis_password),
-        false => "redis://".to_string(),
+        false => format!("redis://{0}:{1}@", opts.redis_username, opts.redis_password),
+        true => "redis://".to_string(),
     };
 
     let redis_nodes = opts

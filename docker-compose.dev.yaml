@@ -4,6 +4,9 @@ volumes:
   redis_1_data: {}
   redis_2_data: {}
   redis_3_data: {}
+  redis_4_data: {}
+  redis_5_data: {}
+  redis_6_data: {}
 
 services:
 
@@ -20,11 +23,17 @@ services:
       - redis_1
       - redis_2
       - redis_3
-      - cluster_initiator
+      - redis_4
+      - redis_5
+      - redis_6
+      - redis_commander
     links:
       - redis_1
       - redis_2
       - redis_3
+      - redis_4
+      - redis_5
+      - redis_6
     networks:
       - redis_cluster_net
 
@@ -67,39 +76,63 @@ services:
       redis_cluster_net:
         ipv4_address: 173.18.0.4
 
-  # Ephemeral container to create the Redis cluster connections.
-  # Once the setup is done, this container shuts down
-  # and the cluster can be used by the service app container
-  cluster_initiator:
-    container_name: cluster_initiator
-    build:
-      context: .
-      dockerfile: ./deploy/dev/Dockerfile_cluster_initiator
-    tty: true
-    depends_on:
-      - redis_1
-      - redis_2
-      - redis_3
+  redis_4:
+    image: 'redis:7.2.3'
+    container_name: redis_4
+    ports:
+      - "6379"
+    volumes:
+      - redis_4_data:/data
+      - ./deploy/dev/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
     networks:
       redis_cluster_net:
         ipv4_address: 173.18.0.5
+
+  redis_5:
+    image: 'redis:7.2.3'
+    container_name: redis_5
+    ports:
+      - "6379"
+    volumes:
+      - redis_5_data:/data
+      - ./deploy/dev/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      redis_cluster_net:
+        ipv4_address: 173.18.0.6
+
+  redis_6:
+    image: 'redis:7.2.3'
+    container_name: redis_6
+    ports:
+      - "6379"
+    volumes:
+      - redis_6_data:/data
+      - ./deploy/dev/redis.conf:/usr/local/etc/redis/redis.conf
+    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+    networks:
+      redis_cluster_net:
+        ipv4_address: 173.18.0.7
 
   # Web UI to browse through our Redis data across all nodes
   redis_commander:
     image: rediscommander/redis-commander:latest
     container_name: redis_web
     environment:
-      REDIS_HOSTS: "local:redis_1:6379,local:redis_2:6379,local:redis_3:6379"
+      REDIS_HOSTS: "local:redis_1:6379,local:redis_2:6379,local:redis_3:6379,local:redis_4:6379,local:redis_5:6379,local:redis_6:6379"
     ports:
       - "5000:8081"
     depends_on:
       - redis_1
       - redis_2
       - redis_3
-      - cluster_initiator
+      - redis_4
+      - redis_5
+      - redis_6
     networks:
       redis_cluster_net:
-        ipv4_address: 173.18.0.6
+        ipv4_address: 173.18.0.8
 
 # Rename the default network, so we can easily identify it across all containers
 networks:

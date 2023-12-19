@@ -33,7 +33,7 @@ pub struct CliOptions {
     #[structopt(
         long = "redis-username",
         help = "Redis username",
-        default_value = "redis",
+        default_value = "",
         env = "REDIS_USERNAME"
     )]
     pub redis_username: String,
@@ -41,7 +41,7 @@ pub struct CliOptions {
     #[structopt(
         long = "redis-password",
         help = "Redis user's password",
-        default_value = "password",
+        default_value = "",
         env = "REDIS_PASSWORD"
     )]
     pub redis_password: String,
