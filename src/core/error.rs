@@ -1,4 +1,4 @@
-use deadpool_redis::PoolError;
+use deadpool_redis::{PoolError, CreatePoolError};
 use derive_more::Display;
 use redis::RedisError;
 use serde_json::error::Error as SerdeError;
@@ -53,6 +53,12 @@ impl From<RedisError> for Error {
 
 impl From<PoolError> for Error {
     fn from(err: PoolError) -> Self {
+        Error::RedisError(err.to_string())
+    }
+}
+
+impl From<CreatePoolError> for Error {
+    fn from(err: CreatePoolError) -> Self {
         Error::RedisError(err.to_string())
     }
 }

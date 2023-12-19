@@ -24,7 +24,7 @@ async fn main() -> std::io::Result<()> {
     let opts = CliOptions::from_args();
     env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
 
-    let redis_connection_pool = create_redis_conection_pool(&opts).await;
+    let redis_connection_pool = create_redis_conection_pool(&opts).await.expect("cannot initialize redis connection pool");
 
     // build the rest service
     let rest = Router::new().route("/health", get(healthcheck));
